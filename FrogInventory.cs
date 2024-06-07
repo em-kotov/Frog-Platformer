@@ -1,20 +1,23 @@
-using TMPro;
 using UnityEngine;
 
 public class FrogInventory : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _strawberryText;
-
+    private FrogInventoryDisplay _display;
     private int _strawberryValue = 0;
+
+    private void Start()
+    {
+        _display = GetComponent<FrogInventoryDisplay>();
+    }
 
     private void Update()
     {
-        _strawberryText.text = _strawberryValue.ToString();
+        _display.DisplayStrawberryValue(_strawberryValue);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.TryGetComponent<Strawberry>(out Strawberry strawberry) && strawberry.CanCollect)
+        if (other.TryGetComponent(out Strawberry strawberry) && strawberry.CanCollect)
         {
             AddStrawberry();
             strawberry.DestroyWithEffect();

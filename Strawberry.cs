@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
@@ -6,12 +5,9 @@ public class Strawberry : MonoBehaviour
 {
     private readonly string Collected = "Collected";
 
-    [SerializeField] private float _delay;
-
     private Animator _animator;
-    private bool _canCollect = true;
 
-    public bool CanCollect => _canCollect;
+    public bool CanCollect { get; private set; } = true;
 
     private void Start()
     {
@@ -21,20 +17,21 @@ public class Strawberry : MonoBehaviour
     public void DestroyWithEffect()
     {
         SetCollected();
-        StartCoroutine(Destroy());
+        SetAnimation();
     }
 
     private void SetCollected()
     {
-        _canCollect = false;
+        CanCollect = false;
     }
 
-    private IEnumerator Destroy()
+    private void SetAnimation()
     {
         _animator.SetTrigger(Collected);
+    }
 
-        yield return new WaitForSeconds(_delay);
-
+    private void Destroy()
+    {
         Destroy(gameObject);
     }
 }

@@ -4,26 +4,40 @@ public class EnemyBehaviour : MonoBehaviour
 {
     [SerializeField] private Transform _waypointMain;
     [SerializeField] private float _speed;
+    [SerializeField] private float _detectDistance;
+    [SerializeField] private float _chaseDistance;
 
     private Transform[] _waypoints;
+    private Transform _frog = null;
     private int _waypointIndex = 0;
+    private bool _canChase = false;
 
     private void Start()
     {
-        _waypoints = new Transform[_waypointMain.childCount];
-
         AddWaypoints();
     }
 
     private void Update()
     {
-        Patrol();
+        DetectFrog();
+
+        if (_canChase)
+        {
+            ChaseFrog();
+            UpdateTarget();
+        }
+        else
+        {
+            Patrol();
+        }
     }
 
     private void AddWaypoints()
     {
+        _waypoints = new Transform[_waypointMain.childCount];
+
         for (int i = 0; i < _waypointMain.childCount; i++)
-            _waypoints[i] = _waypointMain.GetChild(i).transform;
+            _waypoints[i] = _waypointMain.GetChild(i);
     }
 
     private void Patrol()
@@ -41,5 +55,36 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (_waypointIndex == _waypoints.Length)
             _waypointIndex = 0;
+    }
+
+    private void DetectFrog()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _detectDistance);
+        Debug.DrawRay(transform.position, new Vector3(1, 1) * _detectDistance, Color.red);
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.TryGetComponent(out FrogShoot frog))
+            {
+                _frog = frog.transform;
+                _canChase = true;
+            }
+        }
+    }
+
+    private void ChaseFrog()
+    {
+        transform.position = Vector2.MoveTowards(transform.position, _frog.position, _speed * Time.deltaTime);
+    }
+
+    private void UpdateTarget()
+    {
+        float distance = Vector2.Distance(transform.position, _frog.position);
+
+        if (distance > _chaseDistance)
+        {
+            _frog = null;
+            _canChase = false;
+        }
     }
 }

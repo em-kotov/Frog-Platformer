@@ -15,6 +15,9 @@ public class FrogMovement : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private Animator _animator;
     private bool _isFacingRight = true;
+    private bool _canJump = false;
+    private bool _isGrounded = false;
+    private float _direction = 0f;
 
     private void Start()
     {
@@ -24,29 +27,54 @@ public class FrogMovement : MonoBehaviour
 
     private void Update()
     {
+        _direction = Input.GetAxis(Horizontal);
+
+        if (Input.GetKeyDown(JumpKey) && _isGrounded)
+        {
+            _canJump = true;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        DetectGround();
         Run();
         Jump();
         UpdateAnimation();
     }
 
-    private void Run()
+    private void DetectGround()
     {
-        float horizontalInput = Input.GetAxis(Horizontal);
-        _rigidbody.velocity = new Vector2(horizontalInput * _runSpeed, _rigidbody.velocity.y);
+        float distance = 0.2f;
+        RaycastHit2D hit = Physics2D.Raycast(_groundCheck.position, Vector2.down, distance);
 
-        UpdateFlip(horizontalInput);
+        if (hit.collider != null)
+        {
+            _isGrounded = true;
+        }
+        else
+        {
+            _isGrounded = false;
+        }
     }
 
-    private void UpdateFlip(float horizontalInput)
+    private void Run()
+    {
+        _rigidbody.velocity = new Vector2(_direction * _runSpeed, _rigidbody.velocity.y);
+
+        UpdateFlip();
+    }
+
+    private void UpdateFlip()
     {
         float minInput = 0.5f;
 
-        if (horizontalInput > minInput && !_isFacingRight)
+        if (_direction > minInput && !_isFacingRight)
         {
             Flip();
             _isFacingRight = true;
         }
-        else if (horizontalInput < -minInput && _isFacingRight)
+        else if (_direction < -minInput && _isFacingRight)
         {
             Flip();
             _isFacingRight = false;
@@ -66,20 +94,15 @@ public class FrogMovement : MonoBehaviour
     {
         float speed = Mathf.Abs(_rigidbody.velocity.x);
         _animator.SetFloat(Speed, speed);
-        _animator.SetBool(IsGroundedName, IsGrounded());
-    }
-
-    private bool IsGrounded()
-    {
-        float distance = 0.2f;
-        RaycastHit2D hit = Physics2D.Raycast(_groundCheck.position, Vector2.down, distance);
-
-        return hit.collider != null;
+        _animator.SetBool(IsGroundedName, _isGrounded);
     }
 
     private void Jump()
     {
-        if (Input.GetKeyDown(JumpKey) && IsGrounded())
+        if (_canJump)
+        {
             _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, _jumpForce);
+            _canJump = false;
+        }
     }
 }

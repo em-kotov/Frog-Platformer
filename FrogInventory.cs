@@ -1,19 +1,11 @@
+using System;
 using UnityEngine;
 
 public class FrogInventory : MonoBehaviour
 {
-    private FrogInventoryDisplay _display;
-    private int _strawberryValue = 0;
+    public event Action<int> StrawberryValueChanged;
 
-    private void Start()
-    {
-        _display = GetComponent<FrogInventoryDisplay>();
-    }
-
-    private void Update()
-    {
-        _display.DisplayStrawberryValue(_strawberryValue);
-    }
+    public int StrawberryValue { get; private set; } = 0;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -26,6 +18,7 @@ public class FrogInventory : MonoBehaviour
 
     private void AddStrawberry()
     {
-        _strawberryValue++;
+        StrawberryValue++;
+        StrawberryValueChanged?.Invoke(StrawberryValue);
     }
 }

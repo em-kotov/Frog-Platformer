@@ -14,10 +14,10 @@ public class FrogMovement : MonoBehaviour
 
     private Rigidbody2D _rigidbody;
     private Animator _animator;
-    private bool _isFacingRight = true;
     private bool _canJump = false;
-    private bool _isGrounded = false;
     private float _direction = 0f;
+
+    public bool IsFacingRight { get; private set; } = true;
 
     private void Start()
     {
@@ -29,33 +29,26 @@ public class FrogMovement : MonoBehaviour
     {
         _direction = Input.GetAxis(Horizontal);
 
-        if (Input.GetKeyDown(JumpKey) && _isGrounded)
-        {
+        if (Input.GetKeyDown(JumpKey) && IsGrounded())
             _canJump = true;
-        }
     }
 
     private void FixedUpdate()
     {
-        DetectGround();
         Run();
         Jump();
         UpdateAnimation();
     }
 
-    private void DetectGround()
+    private bool IsGrounded()
     {
         float distance = 0.2f;
         RaycastHit2D hit = Physics2D.Raycast(_groundCheck.position, Vector2.down, distance);
 
         if (hit.collider != null)
-        {
-            _isGrounded = true;
-        }
+            return true;
         else
-        {
-            _isGrounded = false;
-        }
+            return false;
     }
 
     private void Run()
@@ -69,21 +62,21 @@ public class FrogMovement : MonoBehaviour
     {
         float minInput = 0.5f;
 
-        if (_direction > minInput && !_isFacingRight)
+        if (_direction > minInput && !IsFacingRight)
         {
             Flip();
-            _isFacingRight = true;
+            IsFacingRight = true;
         }
-        else if (_direction < -minInput && _isFacingRight)
+        else if (_direction < -minInput && IsFacingRight)
         {
             Flip();
-            _isFacingRight = false;
+            IsFacingRight = false;
         }
     }
 
     private void Flip()
     {
-        _isFacingRight = !_isFacingRight;
+        IsFacingRight = !IsFacingRight;
 
         Vector3 scale = transform.localScale;
         scale.x *= -1;
@@ -94,7 +87,7 @@ public class FrogMovement : MonoBehaviour
     {
         float speed = Mathf.Abs(_rigidbody.velocity.x);
         _animator.SetFloat(Speed, speed);
-        _animator.SetBool(IsGroundedName, _isGrounded);
+        _animator.SetBool(IsGroundedName, IsGrounded());
     }
 
     private void Jump()

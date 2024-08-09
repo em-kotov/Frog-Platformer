@@ -30,7 +30,7 @@ public class Strawberry : MonoBehaviour
         _animator.SetTrigger(Collected);
     }
 
-    private void Destroy()
+    private void Destroy() //called as built-in event in animation "Collected"
     {
         Destroy(gameObject);
     }

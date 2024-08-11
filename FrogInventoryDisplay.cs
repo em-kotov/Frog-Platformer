@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(FrogInventory))]
 public class FrogInventoryDisplay : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _strawberryText;
@@ -9,7 +10,7 @@ public class FrogInventoryDisplay : MonoBehaviour
 
     private void Awake()
     {
-        _inventory = gameObject.GetComponent<FrogInventory>();
+        _inventory = GetComponent<FrogInventory>();
     }
 
     private void OnEnable()

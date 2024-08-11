@@ -12,7 +12,7 @@ public class FrogInventory : MonoBehaviour
         if (other.TryGetComponent(out Strawberry strawberry) && strawberry.CanCollect)
         {
             AddStrawberry();
-            strawberry.DestroyWithEffect();
+            strawberry.DeactivateWithEffect();
         }
     }
 

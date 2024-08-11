@@ -1,15 +1,13 @@
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : Health
 {
-    private readonly string IsDead = "IsDead";
-
-    private Animator _animator;
-    private float _points = 30;
+    private float points = 30;
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
+        Animator = GetComponent<Animator>();
+        Points = points;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -18,21 +16,13 @@ public class EnemyHealth : MonoBehaviour
             LoosePoints();
     }
 
-    private void LoosePoints()
+    public override void LoosePoints()
     {
-        float lostPoints = 10;
-        _points -= lostPoints;
-
-        if (_points <= 0)
-            SetDeathAnimation();
+        base.LoosePoints();
+        CheckForDeath();
     }
 
-    private void SetDeathAnimation()
-    {
-        _animator.SetBool(IsDead, true);
-    }
-
-    private void Die() //called in animation event at death animation 
+    private void Deactivate() //called in animation event at death animation 
     {
         gameObject.SetActive(false);
     }

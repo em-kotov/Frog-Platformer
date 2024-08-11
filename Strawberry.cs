@@ -1,9 +1,9 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
-public class Strawberry : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+public class Strawberry : Collectable
 {
-    private readonly string Collected = "Collected";
+    private readonly string _commandCollected = "Collected";
 
     private Animator _animator;
 
@@ -14,7 +14,7 @@ public class Strawberry : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    public void DestroyWithEffect()
+    public void DeactivateWithEffect()
     {
         SetCollected();
         SetAnimation();
@@ -27,11 +27,6 @@ public class Strawberry : MonoBehaviour
 
     private void SetAnimation()
     {
-        _animator.SetTrigger(Collected);
-    }
-
-    private void Destroy() //called as built-in event in animation "Collected"
-    {
-        Destroy(gameObject);
+        _animator.SetTrigger(_commandCollected);
     }
 }

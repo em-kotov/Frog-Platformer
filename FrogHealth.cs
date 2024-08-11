@@ -1,19 +1,18 @@
 using UnityEngine;
 
-public class FrogHealth : MonoBehaviour
+[RequireComponent(typeof(CapsuleCollider2D), typeof(SpriteRenderer))]
+public class FrogHealth : Health
 {
-    private readonly string IsHit = "IsHit";
-    private readonly string IsDead = "IsDead";
-
-    private Animator _animator;
-    private float _points;
+    private readonly string _commandIsHit = "IsHit";
+    
     private float _maxPoints = 50;
+    private float _addedPoints = 10;
     private bool _isHit = false;
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
-        _points = _maxPoints;
+        Animator = GetComponent<Animator>();
+        Points = _maxPoints;
     }
 
     private void Update()
@@ -21,12 +20,11 @@ public class FrogHealth : MonoBehaviour
         if (_isHit)
             LoosePoints();
 
-        UpdateAnimations();
+        UpdateHitAnimation();
 
         _isHit = false;
 
-        if (_points <= 0)
-            Die();
+        CheckForDeath();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -38,36 +36,27 @@ public class FrogHealth : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent(out Medkit medkit))
-            Heal();
+        {
+            medkit.Deactivate();
+            AddPoints(_addedPoints, _maxPoints);
+        }
     }
 
-    private void UpdateAnimations()
+    private void UpdateHitAnimation()
     {
-        _animator.SetBool(IsHit, _isHit);
+        Animator.SetBool(_commandIsHit, _isHit);
     }
 
-    private void LoosePoints()
+    public override void LoosePoints()
     {
-        float lostPoints = 10;
-        _points -= lostPoints;
-
-        Debug.Log($"-10. points: {_points}");
+        base.LoosePoints();
+        Debug.Log($"-10. points: {Points}");
     }
 
-    private void Heal()
+    public override void AddPoints(float addedPoints, float maxPoints)
     {
-        float healPoints = 10;
-        _points += healPoints;
-
-        if (_points > _maxPoints)
-            _points = _maxPoints;
-
-        Debug.Log($"+10. points: {_points}");
-    }
-
-    private void Die()
-    {
-        _animator.SetBool(IsDead, true);
+        base.AddPoints(_addedPoints, _maxPoints);
+        Debug.Log($"+10. points: {Points}");
     }
 
     private void Disappear() //called in animation event at death animation

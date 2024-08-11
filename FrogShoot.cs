@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(BulletSpawner), typeof(FrogMovement))]
 public class FrogShoot : MonoBehaviour
 {
     [SerializeField] private Transform _shootingPoint;

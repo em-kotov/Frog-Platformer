@@ -1,12 +1,12 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
 public class FrogMovement : MonoBehaviour
 {
-    private readonly string Horizontal = "Horizontal";
-    private readonly string Speed = "Speed";
-    private readonly string IsGroundedName = "IsGrounded";
-    private readonly KeyCode JumpKey = KeyCode.Space;
+    private readonly string _commandHorizontal = "Horizontal";
+    private readonly string _commandSpeed = "Speed";
+    private readonly string _commandIsGrounded = "IsGrounded";
+    private readonly KeyCode _jumpKey = KeyCode.Space;
 
     [SerializeField] private float _runSpeed;
     [SerializeField] private float _jumpForce;
@@ -27,9 +27,9 @@ public class FrogMovement : MonoBehaviour
 
     private void Update()
     {
-        _direction = Input.GetAxis(Horizontal);
+        _direction = Input.GetAxis(_commandHorizontal);
 
-        if (Input.GetKeyDown(JumpKey) && IsGrounded())
+        if (Input.GetKeyDown(_jumpKey) && IsGrounded())
             _canJump = true;
     }
 
@@ -45,10 +45,7 @@ public class FrogMovement : MonoBehaviour
         float distance = 0.2f;
         RaycastHit2D hit = Physics2D.Raycast(_groundCheck.position, Vector2.down, distance);
 
-        if (hit.collider != null)
-            return true;
-        else
-            return false;
+        return hit.collider != null;
     }
 
     private void Run()
@@ -86,8 +83,8 @@ public class FrogMovement : MonoBehaviour
     private void UpdateAnimation()
     {
         float speed = Mathf.Abs(_rigidbody.velocity.x);
-        _animator.SetFloat(Speed, speed);
-        _animator.SetBool(IsGroundedName, IsGrounded());
+        _animator.SetFloat(_commandSpeed, speed);
+        _animator.SetBool(_commandIsGrounded, IsGrounded());
     }
 
     private void Jump()

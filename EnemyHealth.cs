@@ -1,29 +1,29 @@
+using System;
 using UnityEngine;
 
 public class EnemyHealth : Health
 {
-    private float points = 30;
+    private float _points = 30;
+
+    public event Action HasDied;
 
     private void Start()
     {
-        Animator = GetComponent<Animator>();
-        Points = points;
+        Points = _points;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.TryGetComponent(out Bullet bullet))
+        {
             LoosePoints();
+            CheckForDeath();
+        }
     }
 
-    public override void LoosePoints()
+    private void CheckForDeath()
     {
-        base.LoosePoints();
-        CheckForDeath();
-    }
-
-    private void Deactivate() //called in animation event at death animation 
-    {
-        gameObject.SetActive(false);
+        if (Points <= 0)
+            HasDied?.Invoke();
     }
 }

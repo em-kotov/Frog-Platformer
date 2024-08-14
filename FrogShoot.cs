@@ -10,6 +10,7 @@ public class FrogShoot : MonoBehaviour
     private BulletSpawner _bulletSpawner;
     private FrogMovement _frogMovement;
     private bool _isShooting = false;
+    private int _leftMouseButtonCode = 0;
 
     private void Start()
     {
@@ -19,7 +20,7 @@ public class FrogShoot : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(_leftMouseButtonCode))
             _isShooting = true;
     }
 
@@ -39,7 +40,6 @@ public class FrogShoot : MonoBehaviour
         EnemyBehaviour closestEnemy = null;
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(_shootingPoint.position, _shootDistance);
-        Debug.DrawRay(_shootingPoint.position, new Vector3(1, 1) * _shootDistance, Color.green);
 
         foreach (Collider2D collider in colliders)
         {

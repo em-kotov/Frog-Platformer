@@ -12,11 +12,6 @@ public class MedkitSpawner : MonoBehaviour
             Create();
     }
 
-    private void Update()
-    {
-        ShowRadius();
-    }
-
     private Vector3 GetRandomPosition()
     {
         Vector3 randomPosition = Random.insideUnitSphere * _radius;
@@ -26,11 +21,5 @@ public class MedkitSpawner : MonoBehaviour
     private void Create()
     {
         Instantiate(_medkitPrefab, GetRandomPosition(), Quaternion.identity);
-    }
-
-    private void ShowRadius()
-    {
-        Vector3 radius = new Vector3(_radius, _radius, _radius);
-        Debug.DrawLine(transform.position, transform.position + radius, Color.blue);
     }
 }

@@ -60,7 +60,6 @@ public class EnemyBehaviour : MonoBehaviour
     private void DetectFrog()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _detectDistance);
-        Debug.DrawRay(transform.position, new Vector3(1, 1) * _detectDistance, Color.red);
 
         foreach (Collider2D collider in colliders)
         {

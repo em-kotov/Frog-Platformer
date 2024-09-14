@@ -20,7 +20,7 @@ public class FrogHealth : Health
         {
             LoosePoints();
             LostPoints?.Invoke();
-            CheckForDeath();
+            HasPoints();
         }
     }
 
@@ -33,7 +33,7 @@ public class FrogHealth : Health
         }
     }
 
-    private void CheckForDeath()
+    private void HasPoints()
     {
         if (Points <= 0)
             HasDied?.Invoke();

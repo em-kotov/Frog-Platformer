@@ -17,11 +17,11 @@ public class EnemyHealth : Health
         if (collision.gameObject.TryGetComponent(out Bullet bullet))
         {
             LoosePoints();
-            CheckForDeath();
+            HasPoints();
         }
     }
 
-    private void CheckForDeath()
+    private void HasPoints()
     {
         if (Points <= 0)
             HasDied?.Invoke();
